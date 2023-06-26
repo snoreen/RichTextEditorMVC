@@ -1,0 +1,342 @@
+﻿@using DevxControlsSamples.Models;
+@using Newtonsoft.Json;
+@model ReportTemplate
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .dropable-item {
+        display: inline-block;
+        min-height: 30px;
+        min-width: 80px;
+        /*background-color: white;*/
+        border: 1px dotted #80808038;
+    }
+    .list-group li
+    {
+        display:inline-block;
+        margin-right:10px;
+        margin-bottom:10px;
+        padding:10px;
+        background-color:gainsboro;
+        border:1px dotted gray;
+        border-radius:2px;
+    }
+</style>
+<style>
+
+    .main-container
+    {
+        width:70%;
+        margin: 0 auto;
+        background-color:white;
+        padding:20px;
+        border-radius:2px;
+        
+    }
+    .images {
+        text-align: center;
+        vertical-align: auto;
+        margin-bottom: 30px;
+    }
+
+        h1 {
+            font-weight: 600;
+            color: #000000;
+
+            font-size: 14px;
+            text-align:left;
+            /* Note: I added font-size because there was an error and h3 was displayed in the same size as h1, I don't know why */
+        }
+
+        h3 {
+            font-weight: 500;
+            color: #05C793;
+            font-size: 20px;
+            /* Note: I added font-size because there was an error and h3 was displayed in the same size as h1, I don't know why */
+        }
+
+        a {
+            color: #fff;
+        }
+
+        a:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .output {
+            text-align: left;
+        }
+
+       /* img {
+            width: 249px;
+            height: 140px;
+            border-radius: 3px;
+        }*/
+
+        .footer {
+            /*position: absolute;*/
+            margin: 0 0 10px 0;
+            bottom: 0;
+            /*margin-left: 20%;*/
+            /*transform: translate(-50%);*/
+            color: #a6a6a6;
+        }
+        .footer-logo {
+            margin-top: -10px;
+            margin-right: 7px;
+            width: 22px;
+            display: inline-block;
+            filter: grayscale(30%);
+        }
+</style>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<h2>Report Template</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <h4><i class="fa fa-picture-o" aria-hidden="true"></i>Available Controls</h4>
+        @*<img src='https://cdn-icons-png.flaticon.com/512/4129/4129528.png' />*@
+        <ul id="available-controls" style="" class="list-group">
+            @foreach (var control in Model.Controls)
+            {
+                <li class="list-group-item" draggable="true" data-control-id="@control.ControlId" data-control-type="@control.Type">
+                    <span><i class="fa fa-picture-o" aria-hidden="true"></i></span><span>@control.ControlName</span>
+                </li>
+            }
+        </ul>
+    </div>
+
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h4>Report Template</h4>
+        <div id="drag-drop-area" class="well" droppable="true" style="width:100%; ">
+            <!-- HIDDEN PREHEADER TEXT -->
+            <div class="main-container">
+                <p class="images">
+                    <span class="dropable-item"></span>
+                </p>
+                <h1>Dear <span class="dropable-item"></span> <span class="dropable-item"></span>,</h1>
+                <p style="text-align:left;">Thank You for Contacting Sales! We appreciate your interest in our products and services.</p>
+
+                <p style="text-align:left;">A member of our sales team will review your inquiry and get back to you as soon as possible.</p>
+
+
+                <!--<div class="col-md-12 text-center">
+            <button type="button" class="btn btn-primary"><a href="#">Extend Time</a></button>
+        </div>-->
+                <p style="text-align:left;">
+                    Regards,<br />
+                    <strong>Sales Team</strong><br />
+                    <span class="dropable-item"></span>
+                </p>
+
+            </div>
+            <p></p>
+            <p class="footer">
+                <span class="dropable-item"></span> 2021&copy; G&D
+
+            </p>
+
+        </div>
+
+    </div>
+</div>
+
+
+@using (Html.BeginForm("GeneratePdf", "ReportTemplate", FormMethod.Post))
+{   
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.TemplateName, "Enter Report Template Name:", htmlAttributes: new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.TemplateName, htmlAttributes: new { @class = "form-control", @required = "required" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <button type="submit" id="generate-pdf" class="btn btn-primary" disabled>Generate PDF</button>
+        </div>
+    </div>
+
+}
+
+@section scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    var availableControls = document.getElementById('available-controls');
+    var dragDropArea = document.getElementById('drag-drop-area');
+    var generatePdfButton = document.getElementById('generate-pdf');
+
+    // Add dragstart event listener to the available controls
+    availableControls.addEventListener('dragstart', function (event) {
+        // Set the data being dragged as the control ID and control type
+        event.dataTransfer.setData('text/plain', event.target.dataset.controlId);
+        event.dataTransfer.setData('text/controlType', event.target.dataset.controlType);
+    });
+
+    // Add dragover event listener to the drag and drop area
+    dragDropArea.addEventListener('dragover', function (event) {
+        // Prevent the default dragover behavior
+        event.preventDefault();
+    });
+
+    // Add drop event listener to the drag and drop area
+    dragDropArea.addEventListener('drop', function (event) {
+        // Prevent the default drop behavior
+        event.preventDefault();
+        debugger;
+        // Check if the drop target is a span with the class "dropable-item"
+        if (event.target.tagName === 'SPAN' && event.target.classList.contains('dropable-item')) {
+            // Get the control ID and control type from the dropped data
+            var controlId = event.dataTransfer.getData('text/plain');
+            var controlType = event.dataTransfer.getData('text/controlType');
+
+            // Create the input control based on the control type
+            var inputControl;
+            if (controlType === "Text") {
+                inputControl = document.createElement("input");
+                inputControl.type = "text";
+            } else if (controlType === "Button") {
+                inputControl = document.createElement("input");
+                inputControl.type = "button";
+            } else if (controlType === "RichText") {
+                inputControl = document.createElement("textarea");
+            } else if (controlType === "Label") {
+                inputControl = document.createElement("label");
+            } else if (controlType === "Image") {
+                inputControl = document.createElement("img");
+            } else if (controlType === "HTML") {
+                inputControl = document.createElement("span");
+            }
+            debugger;
+            // Set the input control attributes
+            var control = Array.from(@Html.Raw(JsonConvert.SerializeObject(Model.Controls))); // Make sure to include the Newtonsoft.Json namespace
+            var selectedControl = control.find(function (c) {
+                return c.ControlId === controlId;
+            });
+            
+            if (selectedControl != 'undefined' && selectedControl != null) {
+                if (controlType == "Image") {
+                    inputControl.src = selectedControl.Value;
+                    inputControl.alt = selectedControl.Label;
+                    inputControl.className = selectedControl.CustomClass;
+                } else if (controlType == "HTML")
+                {
+                    inputControl.innerHTML = selectedControl.Value;
+                    inputControl.className = selectedControl.CustomClass;
+                }
+                else {
+                    inputControl.value = selectedControl.Value;
+                    inputControl.required = selectedControl.Mandatory;
+                    inputControl.className = selectedControl.CustomClass;
+                }
+            } else {
+                inputControl.value = "sample value";
+                inputControl.required = false;
+                inputControl.className = "form-control";
+            }
+
+            // Append the input control to the drag and drop area
+            event.target.appendChild(inputControl);
+        }
+    });
+
+    // Function to fetch object value from the given path
+    function getObjectValue(path) {
+        return "value from object";
+    }
+});
+        @*document.addEventListener('DOMContentLoaded', function () {
+            var availableControls = document.getElementById('available-controls');
+            var dragDropArea = document.getElementById('drag-drop-area');
+            var generatePdfButton = document.getElementById('generate-pdf');
+
+            // Add dragstart event listener to the available controls
+            availableControls.addEventListener('dragstart', function (event) {
+                // Set the data being dragged as the control ID and control type
+                event.dataTransfer.setData('text/plain', event.target.dataset.controlId);
+                event.dataTransfer.setData('text/controlType', event.target.dataset.controlType);
+            });
+
+            // Add dragover event listener to the drag and drop area
+            dragDropArea.addEventListener('dragover', function (event) {
+                // Prevent the default dragover behavior
+                event.preventDefault();
+            });
+
+            // Add drop event listener to the drag and drop area
+            dragDropArea.addEventListener('drop', function (event) {
+                // Prevent the default drop behavior
+                event.preventDefault();
+                debugger;
+                // Get the control ID and control type from the dropped data
+                var controlId = event.dataTransfer.getData('text/plain');
+                var controlType = event.dataTransfer.getData('text/controlType');
+
+                // Create the input control based on the control type
+                var inputControl;
+                if (controlType === "Text") {
+                    inputControl = document.createElement("input");
+                    inputControl.type = "text";
+                } else if (controlType === "Button") {
+                    inputControl = document.createElement("input");
+                    inputControl.type = "button";
+                } else if (controlType === "RichText") {
+                    inputControl = document.createElement("textarea");
+                } else if (controlType === "Label") {
+                    inputControl = document.createElement("label");
+                } else if (controlType === "Image") {
+                    inputControl = document.createElement("img");
+                }
+                debugger;
+                // Set the input control attributes
+               var control = Array.from(@Html.Raw(JsonConvert.SerializeObject(Model.Controls))); // Make sure to include the Newtonsoft.Json namespace
+                var selectedControl = control.find(function (c) {
+                    return c.ControlId === controlId;
+                });
+                    if (selectedControl != 'undefined' && selectedControl != null) {
+                        if (controlType == "Image") {
+                            inputControl.src = selectedControl.Value;
+                            inputControl.alt = selectedControl.Label;
+                            inputControl.className = selectedControl.CustomClass;
+                        } else
+                        {
+                            inputControl.value = selectedControl.Value;
+                            inputControl.required = selectedControl.Mandatory;
+                            inputControl.className = selectedControl.CustomClass;
+                        }
+
+                } else {
+                    inputControl.value = "sample value";
+                    inputControl.required = false;
+                    inputControl.className = "form-control";
+                }
+
+
+                // Append the input control to the drag and drop area
+                dragDropArea.appendChild(inputControl);
+            });
+
+            // Function to fetch object value from the given path
+            function getObjectValue(path) {
+                return "value from object";
+            }
+        });*@
+    </script>
+}
+
+
+
+
+
+
+

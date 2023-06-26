@@ -1,0 +1,96 @@
+﻿@using DevxControlsSamples.Models
+@using System.Drawing; 
+@using DevExpress.Utils; 
+@model ChartPieDoughnutDemoOptions
+
+@{
+    ChartPieDoughnutDemoOptions options = Model;
+    if (options != null)
+    {
+        @Html.DevExpress().Chart(settings =>
+   {
+       settings.Name = "chart";
+       settings.BorderOptions.Visibility = DefaultBoolean.False;
+       settings.Width = 690;
+       settings.Height = 370;
+       settings.PaletteName = "Office";
+       settings.RenderFormat = DevExpress.XtraCharts.Web.RenderFormat.Svg;
+
+       settings.Legends.Default(l =>
+       {
+           l.AlignmentHorizontal = LegendAlignmentHorizontal.RightOutside;
+           l.AlignmentVertical = LegendAlignmentVertical.Center;
+           l.Direction = LegendDirection.TopToBottom;
+           l.MaxVerticalPercentage = 90;
+           l.Border.Visibility = DefaultBoolean.False;
+       });
+
+       settings.Series.Add(s =>
+       {
+           settings.Name = "ProductName2";
+           s.ArgumentDataMember = "ProductName";
+           s.ValueDataMembers[0] = "Quantity";
+           s.LabelsVisibility = options.ShowLabels ? DefaultBoolean.True : DefaultBoolean.False;
+           s.Views().PieSeriesView(v =>
+           {
+               v.Titles.Add(t =>
+               {
+                   t.Text = "Total: {TV:#.##}";
+                   t.Dock = ChartTitleDockStyle.Bottom;
+               });
+               v.SeriesLabel(l =>
+               {
+                   l.Position = options.LabelPosition;
+                   l.TextPattern = options.ValueAsPercent ? "{A}: {VP:P0}" : "{A}: {V:G}";
+                   l.TextColor = Color.Black;
+                   l.BackColor = Color.Transparent;
+                   //l.DXFont = new DXFont("Tahoma", 8, DXFontStyle.Bold);
+                   l.LineVisibility = DefaultBoolean.True;
+                   l.Border.Visibility = DefaultBoolean.False;
+               });
+           });
+       });
+
+       settings.ClientSideEvents.ObjectSelected = "UpdatePieSliseState";
+       settings.ClientSideEvents.ObjectHotTracked = "UpdateCursor";
+
+       settings.BoundDataChanged = (s, e) =>
+       {
+           MVCxChartControl chart = (MVCxChartControl)s;
+           chart.Series[0].Views().PieSeriesView(v =>
+           {
+               if (options.ExplodePoint != null)
+               {
+                   SeriesPoint explodedPoint = null;
+                   foreach (SeriesPoint point in chart.Series[0].Points)
+                   {
+                       if (point.Argument == options.ExplodePoint)
+                       {
+                           explodedPoint = point;
+                           break;
+                       }
+                   }
+                   if (explodedPoint != null)
+                       v.ExplodedPoints.Add(explodedPoint);
+               }
+               else
+                   v.ExplodeMode = options.ExplodeMode;
+           });
+       };
+
+       settings.Titles.Add(new ChartTitle()
+       {
+           //DXFont = new DXFont("Tahoma", 18),
+           Alignment = StringAlignment.Center,
+           Text = "Total Product Sales"
+       }) ;
+       //settings.Titles.Add(new ChartTitle()
+       //{
+       //    Alignment = StringAlignment.Far,
+       //    Dock = ChartTitleDockStyle.Bottom,
+       //    // DXFont = new DXFont("Tahoma", 8),
+       //    TextColor = Color.Gray,
+       //    Text = "From www.nationmaster.com"
+       //});
+   }).Bind(Model.Data).GetHtml()
+    }}

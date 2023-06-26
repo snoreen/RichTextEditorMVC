@@ -1,0 +1,10 @@
+﻿@Html.DevExpress().RichEdit(settings => {
+    settings.Name = "RichEdit1";
+    settings.CallbackRouteValues = new { Controller = "UserForm", Action = "RichEdit1Partial" };
+    settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+    settings.Height = 500;
+    settings.ReadOnly = false;
+    settings.WorkDirectory = "~/App_Data";
+    
+    settings.AssociatedRibbonName = "Ribbon";
+}).Open("Error Message.docx").GetHtml()

@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@Html.Action("DataViewPartial", "Home")
+
+<div class="row">
+    <div class="form-outline col-md-6">
+        <label class="form-label" for="FormName">Form Name</label>
+        @Html.DevExpress().TextBox(settings =>
+        {
+                settings.Name = "FormName";
+                    }).GetHtml()
+
+    </div>
+</div>
+<div class="row">
+    <div class="form-outline col-md-6">
+        <label class="form-label" for="FormName">Form Name</label>
+
+        @Html.DevExpress().DropDownEdit(settings =>
+        {
+                settings.Name = "Status";
+                    settings.SetDropDownWindowTemplateContent(c =>
+            {
+                ViewContext.Writer.Write("Scheduled");
+                ViewContext.Writer.Write("Delivered");
+                ViewContext.Writer.Write("Cancelled");
+            });
+        }).GetHtml()
+
+
+    </div>
+</div>
+<div class="row">
+    <div class="form-outline col-md-2">
+        <label class="form-label" for="FormName">Form Name</label>
+        @Html.DevExpress().TextBox(settings =>
+        {
+                settings.Name = "FormHeight";
+                    }).GetHtml()
+
+    </div>
+    <div class="form-outline col-md-2">
+        <label class="form-label" for="FormName">Form Name</label>
+        @Html.DevExpress().TextBox(settings =>
+        {
+                settings.Name = "FormWidth";
+                    }).GetHtml()
+
+    </div>
+    <div class="form-outline col-md-2">
+        <label class="form-label" for="FormName">Form Name</label>
+        @Html.DevExpress().TextBox(settings =>
+        {
+                settings.Name = "FormOrientation";
+                    }).GetHtml()
+
+    </div>
+</div>
+
+
+<button type="submit" class="btn btn-primary btn-block mb-4">Submit Form</button>
+
+@using (Html.BeginForm())
+{
+    @Html.Action("RichEdit1Partial", "UserForm")
+}
+
+
+
+

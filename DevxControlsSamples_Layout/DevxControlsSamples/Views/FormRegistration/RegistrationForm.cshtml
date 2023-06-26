@@ -1,0 +1,189 @@
+﻿@using DevxControlsSamples.Models;
+@using System.Web.UI.WebControls;
+
+@model RegistrationForm
+
+@functions{
+    private void AssignTextBoxSettings(TextBoxSettings s)
+    {
+        s.ShowModelErrors = true;
+        s.ControlStyle.CssClass = "maxWidth";
+        s.Properties.Password = s.Name.Contains("Password");
+        s.Properties.ValidationSettings.ErrorDisplayMode = ErrorDisplayMode.Text;
+        s.Properties.ValidationSettings.ErrorTextPosition = ErrorTextPosition.Bottom;
+        s.Properties.ValidationSettings.Display = Display.Dynamic;
+        s.Properties.ValidationSettings.ErrorFrameStyle.Wrap = DefaultBoolean.True;
+    }
+}
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+}
+
+
+
+@using (Html.BeginForm("SaveDataToList", "FormRegistration", FormMethod.Post))
+{
+    @Html.DevExpress().FormLayout(settings =>
+    {
+        settings.Name = "FormLayout";
+        settings.AlignItemCaptionsInAllGroups = true;
+        settings.UseDefaultPaddings = false;
+        settings.ColumnCount = 2;
+        settings.Width = Unit.Percentage(100);
+
+
+        settings.Styles.LayoutGroupBox.CssClass = "fullHeight fullWidth";
+        settings.Styles.LayoutGroup.Cell.CssClass = "fullHeight";
+
+        settings.SettingsAdaptivity.GridSettings.ChangeCaptionLocationAtWidth = 400;
+        settings.SettingsAdaptivity.GridSettings.Breakpoints.Add(new LayoutBreakpoint { ColumnCount = 1, MaxWidth = 790, Name = "S" });
+
+        settings.Items.AddGroupItem(m => m.RegistrationData, g =>
+        {
+            g.GroupBoxDecoration = GroupBoxDecoration.Box;
+            g.GridSettings.ChangeCaptionLocationAtWidth = 400;
+            g.SpanRules.Add(new SpanRule { BreakpointName = "S", ColumnSpan = 1, RowSpan = 1 });
+
+            g.Items.Add(m => m.RegistrationData.FirstName, i =>
+            {
+                i.Caption = "Name";
+                i.NestedExtension().TextBox(s =>
+                {
+                    AssignTextBoxSettings(s);
+                    s.Properties.ValidationSettings.ErrorText = "*";
+                });
+            });
+            g.Items.Add(m => m.RegistrationData.LastName, i =>
+            {
+                i.Caption = "Last Name";
+                i.NestedExtension().TextBox(s =>
+                {
+                    AssignTextBoxSettings(s);
+                    s.Properties.ValidationSettings.ErrorText = "*";
+                });
+            });
+
+            g.Items.Add(m => m.RegistrationData.Gender, i =>
+            {
+                i.NestedExtension().RadioButtonList(s =>
+                {
+                    s.Width = Unit.Percentage(100);
+                    s.Properties.RepeatDirection = RepeatDirection.Vertical;
+                    s.Properties.Items.Add("Male", 0);
+                    s.Properties.Items.Add("Female", 1);
+                    s.ControlStyle.Border.BorderStyle = BorderStyle.None;
+                });
+            });
+            g.Items.Add(m => m.RegistrationData.Country, i =>
+            {
+                i.NestedExtension().ComboBox(s =>
+                {
+                    s.ControlStyle.CssClass = "maxWidth";
+                    s.Properties.DropDownStyle = DropDownStyle.DropDownList;
+                    s.Properties.IncrementalFilteringMode = IncrementalFilteringMode.StartsWith;
+                    s.Properties.DataSource = RegistrationData.GetPossibleCountries();
+                });
+            });
+        });
+
+
+        settings.Items.AddGroupItem(i => i.AuthorizationData, g =>
+        {
+            g.GroupBoxDecoration = GroupBoxDecoration.Box;
+            g.GridSettings.ChangeCaptionLocationAtWidth = 400;
+            g.SpanRules.Add(new SpanRule { BreakpointName = "S", ColumnSpan = 1, RowSpan = 1 });
+
+            g.Items.Add(m => m.AuthorizationData.Email, i =>
+            {
+                i.NestedExtension().TextBox(s => AssignTextBoxSettings(s));
+            });
+            g.Items.Add(m => m.AuthorizationData.Password, i =>
+            {
+                i.NestedExtension().TextBox(s =>
+                {
+                    AssignTextBoxSettings(s);
+                    s.Properties.ClientSideEvents.Init = "OnPasswordTextBoxInit";
+                    s.Properties.ClientSideEvents.KeyUp = "OnPassChanged";
+                    s.Properties.ClientInstanceName = "passwordTextBox";
+                });
+            });
+            g.Items.Add(i =>
+            {
+                i.Caption = " ";
+                i.SetNestedContent(() =>
+                {
+                    Html.ViewContext.Writer.Write("<div>");
+                    Html.DevExpress().RatingControl(s =>
+                    {
+                        s.Name = "ratingControl";
+                        s.ReadOnly = true;
+                        s.ItemCount = 5;
+                    }).Bind(0).Render();
+                    Html.ViewContext.Writer.Write("</div>");
+                    Html.ViewContext.Writer.Write("<div style='padding-top: 10px; padding-bottom: 10px'>");
+                    Html.DevExpress().Label(s =>
+                    {
+                        s.Name = "ratingLabel";
+                        s.Properties.EnableClientSideAPI = true;
+                        s.Text = "Password safety";
+                    }).Render();
+                    Html.ViewContext.Writer.Write("</div>");
+                });
+            });
+            g.Items.Add(m => m.AuthorizationData.ConfirmPassword, i =>
+            {
+                i.NestedExtension().TextBox(s => AssignTextBoxSettings(s));
+            });
+        });
+
+        settings.Items.AddGroupItem(g =>
+        {
+            g.ShowCaption = DefaultBoolean.False;
+            g.GroupBoxDecoration = GroupBoxDecoration.Box;
+            g.SettingsItemCaptions.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+            g.SpanRules.Add(new SpanRule { BreakpointName = "S", ColumnSpan = 1, RowSpan = 1 });
+            g.ColumnSpan = 2;
+            g.ParentContainerStyle.CssClass = "mobileGroupIndent";
+
+
+            g.Items.Add(itemSettings =>
+            {
+                itemSettings.ShowCaption = DefaultBoolean.False;
+                itemSettings.CssClass = "mobileAlign";
+                itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                itemSettings.SetNestedContent(() =>
+                {
+                    Html.RenderPartial("RegistrationFormCaptchaPartialView");
+                });
+            });
+            g.Items.Add(itemSettings =>
+            {
+                itemSettings.ShowCaption = DefaultBoolean.False;
+                itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                itemSettings.CssClass = "mobileAlign";
+                itemSettings.ParentContainerStyle.CssClass = "mobileAlign";
+                itemSettings.NestedControlCellStyle.CssClass = "maxWidth";
+            })
+                .SetNestedContent("<span style='padding-top:12px;'>By clicking \"Sign Up\", you agree to the <a href=\"javascript:;\">privacy policy</a> and the <a href=\"javascript:;\">terms of use</a></span>");
+            g.Items.AddEmptyItem().Height = 20;
+            g.Items.Add(itemSettings =>
+            {
+                itemSettings.ShowCaption = DefaultBoolean.False;
+                itemSettings.CssClass = "btn";
+                itemSettings.HorizontalAlign = FormLayoutHorizontalAlign.Center;
+                itemSettings.NestedExtension().Button(s =>
+                {
+                    s.Name = "signUp";
+                    s.Text = "Sign Up";
+                    s.UseSubmitBehavior = true;
+                    s.Width = Unit.Pixel(200);
+                });
+            });
+        });
+    }).GetHtml()
+
+   
+}
+

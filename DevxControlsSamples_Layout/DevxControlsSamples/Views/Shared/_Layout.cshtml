@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Html.DevExpress().GetStyleSheets(
+        new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout }
+)
+    @Html.DevExpress().GetScripts(
+            new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout }
+    )
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    @*<link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/controls.css" rel="stylesheet" />*@
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Products", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    @*<li>@Html.ActionLink("About", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar">
+        @Html.DevExpress().TreeView(settings =>
+        {
+            settings.Name = "tvDataBinding";
+            settings.AllowSelectNode = true;
+
+            settings.TextField = "Title";
+            settings.NavigateUrlField = "HelpUrl";
+            settings.ImageUrlField = "NodeTypeImage";
+
+            settings.Images.NodeImage.Width = 16;
+            settings.Images.NodeImage.Height = 16;
+            settings.Styles.NodeImage.Paddings.PaddingTop = 3;
+
+            settings.NodeDataBound = (source, e) =>
+            {
+                System.Xml.XmlNode dataNode = ((e.Node.DataItem as IHierarchyData).Item as System.Xml.XmlNode);
+                if (dataNode.Name == "class")
+                    e.Node.TextStyle.Font.Bold = true;
+            };
+
+
+        
+
+        settings.PreRender = (source, e) =>
+        {
+            ASPxTreeView treeView = (ASPxTreeView)source;
+            treeView.ExpandToDepth(0);
+        };
+    }).BindToXML(Server.MapPath("~/App_Data/tvData.xml"), "//namespace/*").GetHtml()
+
+        @*@Html.Partial("EventMonitor")*@
+    </div>
+    <div class="container-fluid">
+        <div class="row" id="mainbody">
+            <div class="container-fluid body-content full-height-container container-fluid-custom">
+                @RenderBody()
+                @*<hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+                </footer>*@
+            </div>
+        </div>
+
+    </div>
+    
+        
+
+        
+</body>
+</html>

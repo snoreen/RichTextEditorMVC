@@ -1,0 +1,152 @@
+﻿@using DevxControlsSamples.Models
+@model Variable
+<style>
+    .section-container {
+        padding: 25px;
+        -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.2) !important;
+        display: inline-block;
+        width: 100%;
+    }
+</style>
+<div class="form-title-wrapper"><h2 class="core-title-xs">Variable Details</h2></div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="section-container">
+            @using (Html.BeginForm("SaveData", "Variable", FormMethod.Post))
+            {
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.VariableId, "Variable ID", htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.VariableId, htmlAttributes: new { @class = "form-control", @required = "required" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(m => m.VariableName, "Variable Name", htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.VariableName, htmlAttributes: new { @class = "form-control", @required = "required" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.DataType, "Data Type", htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.DataType, new SelectList(ViewBag.DataTypes), htmlAttributes: new { @class = "form-control", @required = "required" })
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.DefaultValue,"Default Value", htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.DefaultValue, htmlAttributes: new { @class = "form-control" })
+                    </div>
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(m => m.Value, htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Value, htmlAttributes: new { @class = "form-control" })
+                    </div>
+
+                    <div class="col-md-3">
+                        <div id="dynamicDatasourceContainer" style="display:none;">
+                            @Html.LabelFor(m => m.PathToSource, "Select Dynamic Data(Json)", htmlAttributes: new { @class = "form-label" })
+                            @Html.DropDownListFor(m => m.PathToSource, new SelectList(ViewBag.JsonData, "PropertyValue", "PropertyName"), htmlAttributes: new { @class = "form-control", @style = "display:none;", @onchange = "updateValueFromDropdown()" })
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    
+                    <div class="col-md-1">
+
+                        @Html.LabelFor(m => m.AllowNull, "Nullable?", htmlAttributes: new { @class = "form-check-label form-chk" })
+                        @Html.CheckBoxFor(m => m.AllowNull, htmlAttributes: new { @class = "form-check-input form-chk" })
+
+                    </div>
+                    <div class="col-md-2">
+
+                        @Html.LabelFor(m => m.Bound, "Dynamic Value", htmlAttributes: new { @class = "form-check-label form-chk" })
+                        @Html.CheckBoxFor(m => m.Bound, htmlAttributes: new { @class = "form-check-input form-chk", @onclick = "toggleDynamicDatasource()" })
+                    </div>
+
+                </div>
+                <div class="row">
+
+                    
+
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button class="btn btn-primary form-btn" type="submit">Save Details</button>
+                    </div>
+                </div>
+
+                @*<input class="btn btn-primary" type="submit" value="Save" />*@
+            }
+
+        </div>       
+       
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        @Html.Action("GridViewPartial", "Variable")
+
+    </div>
+</div>
+
+
+
+@section scripts {
+    <script>
+        function updateValueFromDropdown() {
+            var pathToSourceDropdown = document.getElementById("PathToSource");
+            var valueControl = document.getElementById("Value");
+
+            // Get the selected option value from the dropdown
+            var selectedValue = pathToSourceDropdown.options[pathToSourceDropdown.selectedIndex].value;
+
+            // Set the selected value to the Value control
+            valueControl.value = selectedValue;
+        }
+        function toggleDynamicDatasource() {
+            var dynamicDatasourceContainer = document.getElementById("dynamicDatasourceContainer");
+            var dynamicDatasourceContainerLabel = document.getElementById("PathToSource");
+            var allowNullCheckbox = document.getElementById("Bound");
+            var valuecontrol = document.getElementById("Value");
+
+            if (allowNullCheckbox.checked) {
+                dynamicDatasourceContainer.style.display = "block";
+                dynamicDatasourceContainerLabel.style.display = "block";
+                valuecontrol.readOnly = true;
+            } else {
+                dynamicDatasourceContainer.style.display = "none";
+                dynamicDatasourceContainerLabel.style.display = "none";
+                valuecontrol.readOnly = false;
+            }
+        }
+
+
+        if (@ViewBag.RefreshTreeView == true) {
+            refreshTreeView();
+        }
+        function refreshTreeView() {
+            $.ajax({
+            url: '@Url.Action("GetXmlData", "Variable")',
+            type: 'GET',
+            dataType: 'xml',
+            success: function (data) {
+                var treeView = $("#treeviewContainer").dxTreeView("instance");
+                treeView.option("dataSource", data);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+        var dataTypes = @Html.Raw(Json.Encode(ViewBag.DataTypes));
+        $(document).ready(function () {
+            $.each(dataTypes, function (index, value) {
+                $('#DataType_' + index).val(value);
+            });
+        });
+    </script>
+}

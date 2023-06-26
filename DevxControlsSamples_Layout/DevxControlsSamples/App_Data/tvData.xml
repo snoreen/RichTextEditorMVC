@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace HelpUrl="javascript:void(0);" Title="DevExpress.Web.ASPxCallback Namespace">
+  <class HelpUrl="javascript:void(1);" Title="Templates" NodeTypeImage="~/Content/TreeView/HelpNav/class.gif">
+    <helpNavNode HelpUrl="https://localhost:44392/Home/Index" Title="Dashboard" />
+    <helpNavNode HelpUrl="https://localhost:44392/FormRegistration/RegistrationForm" Title="User Registration" />
+    <helpNavNode HelpUrl="https://localhost:44392/ReportTemplate/Index" Title="Report Designer" />
+  </class>
+  <class HelpUrl="https://localhost:44392/UIControl/Index" Title="Controls" NodeTypeImage="~/Content/TreeView/HelpNav/class.gif">
+    <helpNavNode HelpUrl="javascript:void(16);" Title="FirstName" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="LastName" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="Personal Address" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="LogoImage" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="Footer Images" />
+  </class>
+  <class HelpUrl="https://localhost:44392/Variable/Index" Title="Variables" NodeTypeImage="~/Content/TreeView/HelpNav/class.gif">
+    <helpNavNode HelpUrl="javascript:void(16);" Title="FirstName" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="LastName" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="Email" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="Address" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="LogoImage" />
+    <helpNavNode HelpUrl="javascript:void(16);" Title="FooterLogo" />
+  </class>
+</namespace>

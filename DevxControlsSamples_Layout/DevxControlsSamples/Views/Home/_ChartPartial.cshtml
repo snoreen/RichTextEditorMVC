@@ -1,0 +1,54 @@
+﻿@Html.DevExpress().Chart(settings =>
+{
+
+    settings.Name = "Chart";
+    settings.Series.Add(s =>
+    {
+        s.SetDataMembers("ProductName", "Quantity");
+       
+    });
+    settings.Width = 890;
+    settings.Height = 370;
+    settings.PaletteName = "Office";
+    settings.RenderFormat = DevExpress.XtraCharts.Web.RenderFormat.Svg;
+    settings.BorderOptions.Visibility = DefaultBoolean.False;
+    settings.CrosshairEnabled = DefaultBoolean.False;
+    settings.SaveStateOnCallbacks = true;
+    settings.CallbackRouteValues = new { controller = "Home", action = "Index" };
+    //settings.ClientSideEvents.BeginCallback = "OnBeginCallback";
+  
+    settings.Legends.Default(l =>
+    {
+        l.AlignmentHorizontal = LegendAlignmentHorizontal.Right;
+        l.MarkerMode = LegendMarkerMode.CheckBox;
+    });
+
+    //settings.Series.Template(t =>
+    //{
+    //    t.Views().SideBySideBarSeriesView(v =>
+    //    {
+    //        v.SeriesLabel(l =>
+    //        {
+    //            l.Position = options.LabelPosition;
+    //            l.TextOrientation = options.TextOrientation;
+    //            l.Indent = options.LabelIndent;
+    //            l.ResolveOverlappingMode = ResolveOverlappingMode.Default;
+    //        });
+    //    });
+    //    t.SetDataMembers("Region", "Sales");
+    //    t.LabelsVisibility = options.ShowLabels ? DefaultBoolean.True : DefaultBoolean.False;
+    //});
+
+    settings.XYDiagram(d =>
+    {
+        d.AxisY.Interlaced = true;
+        d.AxisY.Title.Text = "Millions of Dollars";
+        d.AxisY.Title.Visibility = DefaultBoolean.True;
+    });
+
+    settings.Titles.Add(new ChartTitle()
+    {
+
+        Text = "Average Sales of Products"
+    });
+}).Bind(Model).GetHtml()

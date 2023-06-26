@@ -1,0 +1,172 @@
+﻿@using DevExpress.Utils
+
+
+@{
+                var grid = Html.DevExpress().GridView(settings =>
+                {
+
+                settings.Name = "GridView";
+                settings.CallbackRouteValues = new { Controller = "Home", Action = "GridViewPartial" };
+
+                settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Home", Action = "GridViewPartialAddNew" };
+                settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Home", Action = "GridViewPartialUpdate" };
+                settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Home", Action = "GridViewPartialDelete" };
+                settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+                settings.SettingsBehavior.ConfirmDelete = true;
+
+                settings.CommandColumn.Visible = true;
+                settings.CommandColumn.ShowNewButton = true;
+                settings.CommandColumn.ShowDeleteButton = true;
+                settings.CommandColumn.ShowEditButton = true;
+
+                settings.KeyFieldName = "ProductID";
+
+                settings.SettingsPager.Visible = true;
+                settings.Settings.ShowGroupPanel = true;
+                settings.Settings.ShowFilterRow = false;
+                settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+                settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+                settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+                settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+                settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+                settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+                settings.CommandColumn.Visible = true;
+
+                settings.CommandColumn.Caption = "";
+
+                settings.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Link;
+                settings.SettingsCommandButton.NewButton.Text = "<i class='fa fa-plus'></i>";
+                settings.SettingsCommandButton.EditButton.Text = "<i class='fa fa-edit'></i>";
+                settings.SettingsCommandButton.DeleteButton.Text = "<i class='fa fa-trash'></i>";
+
+
+                ////////////////////////////
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "IsActive";
+                    column.Caption = "Status";
+                    column.Width = 100;
+                    //column.ColumnType = MVCxGridViewColumnType.CheckBox;
+                    column.CellStyle.HorizontalAlign = System.Web.UI.WebControls.HorizontalAlign.Left;
+                    column.PropertiesEdit.DisplayFormatString = "Checked|Unchecked";
+                    //column.CellStyle.CssClass = "custom-cell";
+                    settings.HtmlDataCellPrepared += (sender, e) =>
+                    {
+                        if (e.DataColumn.FieldName == "IsActive")
+                        {
+                            bool isActive = (bool)e.CellValue;
+                            e.Cell.CssClass += isActive ? " custom-cell-active " : " custom-cell-inactive ";
+                            e.Cell.Text = isActive ? "<span class='fa-green'><i class='fa fa-check-circle fa-green'class='fa fa-check-circle fa-green'></i> Active</span>" : "<span class='fa-gray'><i class='fa fa-times-circle '></i> Inactive</span>";
+
+                            var checkBox = e.Cell.FindControl("IsActive") as ASPxCheckBox;
+                            if (checkBox != null)
+                            {
+                                checkBox.Checked = isActive;
+                            }
+                        }
+                    };
+                });
+
+
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "Name";
+                    column.Caption = "Name";
+                    column.Width = 200; // Set the desired width in pixels
+                });
+
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "Price";
+                    column.Caption = "Price";
+                    column.Width = 100;
+                    column.PropertiesEdit.DisplayFormatString = "c";
+
+                    column.HeaderStyle.HorizontalAlign = System.Web.UI.WebControls.HorizontalAlign.Right;
+                    //column.HeaderStyle.HorizontalAlign = HorizontalAlign.Center; // Align header center
+                    //column.SettingsHeaderFilter.Visible = DefaultBoolean.False; // Hide header filter
+                    column.Settings.AutoFilterCondition = AutoFilterCondition.Contains;
+                });
+
+
+
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "Category";
+                    column.Caption = "Category";
+                    column.Width = 200;
+                });
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "Quantity";
+                    column.Caption = "Quantity";
+                    column.CellStyle.HorizontalAlign = System.Web.UI.WebControls.HorizontalAlign.Center;
+                    column.Width = 100;
+                });
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "Brand";
+                    column.Caption = "Brand";
+                    column.Width = 100;
+                });
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "Color";
+                    column.Caption = "Color";
+                    column.Width = 100;
+                });
+                settings.Columns.Add(column =>
+                {
+                    column.FieldName = "Size";
+                    column.Caption = "Size";
+                    column.Width = 100;
+                });
+                settings.Columns.Add(column =>
+                {
+                column.FieldName = "ProductValue";
+                column.Caption = "Remaining";
+                column.Width = 100;
+                //column.ColumnType = MVCxGridViewColumnType.ProgressBar;
+                settings.HtmlDataCellPrepared += (sender, e) =>
+                {
+                    if (e.DataColumn.FieldName == "ProductValue")
+                    {
+                        int productValue = (int)e.CellValue;
+                        var progBarClass = "";
+                        if (productValue < 40)
+                        {
+                            progBarClass = "progress-bar-danger";
+                        }else if(productValue > 40 && productValue < 70)
+                        {
+                            progBarClass = "progress-bar-warning";
+                        }
+                        else if (productValue >70 || productValue == 70)
+                        {
+                            progBarClass = "progress-bar-success";
+                        }
+                        e.Cell.Text = string.Format(@"<div class='progress' style='margin-top:4px;'>
+                      <div class='progress-bar {0}' role='progressbar' style='width: {1}%;' aria-valuenow='{1}' aria-valuemin='0' aria-valuemax='100'>{1}%</div></div>", progBarClass, productValue);
+
+                    }
+                };            
+        });
+
+    settings.Columns.Add(column =>
+    {
+        column.FieldName = "Description";
+        column.Caption = "Description";
+        column.Width = 500;
+    });
+
+
+    settings.Columns.Move(-1, 8);
+
+
+    });
+    if (ViewData["EditError"] != null)
+    {
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model).GetHtml()

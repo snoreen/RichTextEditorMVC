@@ -1,0 +1,157 @@
+﻿
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    font-family: "Roboto", sans-serif!important;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top:40px;
+}
+.fa-green {
+    color: green;
+}
+
+.fa-gray {
+    color: gray;
+}
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+.dxgvGroupPanel_Office365 {
+    display: none !important;
+}
+  
+
+.dxtvControl_Office365 {
+    font-family: "Helvetica", sans-serif !important;
+    font-size: 14px !important;
+}
+.full-height-container {
+    min-height: 90vh;
+}
+.dxgvTable_Office365 {
+    border-top-width: 0px !important;
+    border-left-width: 0px !important;
+    border-right-width: 0px !important;
+}
+.dxgvDataRow_Office365 td {
+    border-bottom-width: 1px !important;
+    border-right-width: 0px !important;
+    padding: 7px 10px 9px !important;
+}
+.dxgvHeader_Office365 {
+    border-bottom-width: 3px !important;
+    border-right-width: 0px !important;
+    /*border-bottom-color: #f87c1d !important;*/
+    border-bottom-color: #d9dde5 !important;
+    padding: 7px 10px 9px !important;
+    border-top-width: 0px !important;
+    font-weight: bold !important;
+    color: #666 !important;
+}
+
+.sidebar {
+    background-color: aliceblue !important;
+    border-right: 1px solid darkgray !important;
+    min-height: 90vh;
+}
+
+.dxgvControl_Office365 {
+    font-family: "Roboto", sans-serif !important;
+    font-size:14px!important;
+    width:100%;
+}
+.dxtv-control ul > li {
+    padding-left: 10px;
+    padding-right: 10px;
+    /*border: 1px solid gray;*/
+}
+
+.dxtv-control {
+    width: 100% !important;
+}
+
+.dxtv-nd .dxtv-ndSel {
+    width: 92%;
+}
+
+.progress-bar {
+    line-height: 18px !important;
+    font-size: 11px !important;
+    color: rgba(20,81,145,1) !important;
+}
+#mainbody {
+    position: absolute;
+    inset: 0px;
+    
+    margin-right: -17px;
+    margin-bottom: -17px;
+    width: 100%;
+}
+.action-col-header {
+    width: 80px !important;
+    text-align: left !important;
+}
+.progress {
+    height: 18px !important;
+    margin-bottom: 0px !important;
+    width: 100%;
+}
+
+.progress-bar-warning {
+    background-color: #f0ad4e;
+}
+
+.progress-bar-danger {
+    background-color: #d9534f;
+}
+
+.progress-bar-success {
+    background-color: #5cb85c;
+}
+
+.sidebar {
+    position: fixed;
+    top: 50px;
+    bottom: 0;
+    padding-top: 23px;
+    overflow: hidden;
+    width: 25rem;
+    z-index: 1010;
+    color: hsl(210,20%,98%);
+    background-color: hsl(210,20%,98%);
+}
+
+.navbar {
+    min-height: 50px;
+    margin-bottom: 0px!important;
+}
+
+.container-fluid-custom {
+    padding-left: 30px;
+    padding-right: 43px;
+    margin-left: 272px;
+    padding-top: 100px;
+}
+.section-container {
+    padding: 25px;
+    -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.2) !important;
+    display: inline-block;
+    width: 100%;
+}
+
+.core-title-xs {
+    font-size: 1.375rem;
+    line-height: 32px;
+    font-weight: 400;
+    margin-bottom: 40px;
+}

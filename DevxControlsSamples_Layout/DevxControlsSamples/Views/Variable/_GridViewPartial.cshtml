@@ -1,0 +1,72 @@
+﻿@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "gvStoresVariable";
+        settings.CallbackRouteValues = new { Controller = "Variable", Action = "GridViewPartial" };
+
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Variable", Action = "GridViewPartialAddNew" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Variable", Action = "GridViewPartialUpdate" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Variable", Action = "GridViewPartialDelete" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = false;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.KeyFieldName = "VariableId";
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = true;
+        settings.Settings.ShowFilterRow = false;
+        settings.SettingsBehavior.AllowSelectByRowClick = false;
+        settings.SettingsCommandButton.RenderMode = GridCommandButtonRenderMode.Link;
+        //settings.SettingsCommandButton.NewButton.Text = "<i class='fa fa-plus'></i>";
+        settings.SettingsCommandButton.EditButton.Text = "<i class='fa fa-edit'></i>";
+        settings.SettingsCommandButton.DeleteButton.Text = "<i class='fa fa-trash'></i>";
+
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.Off;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 0;
+        settings.CommandColumn.CellStyle.CssClass = "action-col-header";
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "VariableName";
+            column.Caption = "VariableName";
+            column.Width = 200;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "DataType";
+            column.Caption = "DataType";
+            column.Width = 200;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "Value";
+            column.Caption = "Value";
+            column.Width = 200;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "DefaultValue";
+            column.Caption = "DefaultValue";
+            column.Width = 200;
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "AllowNull";
+            column.Caption = "Nullable?";
+            column.Width = 80;
+            
+            column.ColumnType = MVCxGridViewColumnType.CheckBox;
+        });
+
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+    }
+@grid.Bind(Model).GetHtml()

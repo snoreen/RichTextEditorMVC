@@ -1,0 +1,114 @@
+﻿@using DevxControlsSamples.Models
+@model UIControl
+<style>
+    .section-container {
+        padding: 25px;
+        -webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.2) !important;
+        display: inline-block;
+        width: 100%;
+    }
+</style>
+<div class="form-title-wrapper"><h2 class="core-title-xs">Control Details</h2></div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="section-container">
+            @using (Html.BeginForm("SaveData", "UIControl", FormMethod.Post))
+            {
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.ControlId, "Control ID", htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.ControlId, htmlAttributes: new { @class = "form-control", @required = "required" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.ControlName, "Control Name", htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.ControlName, htmlAttributes: new { @class = "form-control", @required = "required" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.Display, htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.Display, new SelectList(ViewBag.DisplayTypes), "Select control type", htmlAttributes: new { @class = "form-control", @required = "required" })
+
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.Label, "Label", htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Label, htmlAttributes: new { @class = "form-control", @required = "required" })
+
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.Value, htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.Value, new SelectList(ViewBag.ControlValues, "Value", "VariableName"), "Select a variable", new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.Type, htmlAttributes: new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.Type, new SelectList(ViewBag.ControlTyes), "Select control type", htmlAttributes: new { @class = "form-control", @required = "required" })
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.LabelFor(m => m.CustomClass, "Custom Class", htmlAttributes: new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.CustomClass, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-1">
+                        <div class="container-check">
+                            @Html.LabelFor(m => m.Mandatory, htmlAttributes: new { @class = "form-check-label form-chk" })
+                            @Html.CheckBoxFor(m => m.Mandatory, htmlAttributes: new { @class = "form-check-input form-chk" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" type="submit">Save Details</button>
+                    </div>
+                </div>
+
+                @*<input class="btn btn-primary" type="submit" value="Save" />*@
+            }
+
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+
+        @Html.Action("GridView1Partial", "UIControl")
+
+
+    </div>
+</div>
+
+
+
+@section scripts {
+    
+    <script>
+        
+        if (@ViewBag.RefreshTreeView == true) {
+        refreshTreeView();
+        }
+        function refreshTreeView() {
+        $.ajax({
+            url: '@Url.Action("GetXmlData", "Variable")',
+            type: 'GET',
+            dataType: 'xml',
+            success: function (data) {
+                var treeView = $("#treeviewContainer").dxTreeView("instance");
+                treeView.option("dataSource", data);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+        var dataTypes = @Html.Raw(Json.Encode(ViewBag.DataTypes));
+        $(document).ready(function () {
+            $.each(dataTypes, function (index, value) {
+                $('#DataType_' + index).val(value);
+            });
+        });
+    </script>
+}

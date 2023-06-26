@@ -1,0 +1,12 @@
+﻿@using System.Web.UI.WebControls;
+@Html.DevExpress().Captcha(captchaSettings =>
+{
+    captchaSettings.Name = "captcha";
+    captchaSettings.CallbackRouteValues = new { Controller = "FormLayout", Action = "RegistrationFormCaptchaPartialView" };
+    captchaSettings.Width = Unit.Pixel(200);
+    captchaSettings.Styles.TextBox.Width = Unit.Percentage(100);
+    captchaSettings.TextBox.Position = DevExpress.Web.Captcha.ControlPosition.Bottom;
+    captchaSettings.TextBox.ShowLabel = false;
+    captchaSettings.RefreshButton.Visible = true;
+    captchaSettings.Styles.RefreshButton.Font.Underline = true;
+}).GetHtml()
